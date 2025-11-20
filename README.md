@@ -89,13 +89,13 @@ A API estará disponível em:
 #### **1. Baixar imagem do DockerHub**
 
 ``` bash
-docker pull <SEU_USER>/5FSDT-Fase-4Tech-Challenge:latest
+docker pull villares/5FSDT-Fase-4Tech-Challenge:latest
 ```
 
 #### **2. Executar o container**
 
 ``` bash
-docker run -d   --name TechChallengeBackend   -p 3000:3000   <SEU_USER>/5FSDT-Fase-4Tech-Challenge:latest
+docker run -d   --name TechChallengeBackend   -p 3000:3000   villares/5FSDT-Fase-4Tech-Challenge:latest
 ```
 
 ------------------------------------------------------------------------
