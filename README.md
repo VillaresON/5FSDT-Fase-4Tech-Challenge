@@ -214,8 +214,7 @@ Arquivo usado:
 
 A imagem gerada segue o padrão:
 
-    <SEU_USER>/5FSDT-Fase-4Tech-Challenge:latest
-    <SEU_USER>/5FSDT-Fase-4Tech-Challenge:<commit_sha>
+    villares/5FSDT-Fase-4Tech-Challenge:latest
 
 ------------------------------------------------------------------------
 
@@ -225,7 +224,7 @@ A imagem gerada segue o padrão:
     https://github.com/VillaresON/5FSDT-Fase-4-Tech-Challenge
 
 -   **Docker Hub:**\
-    https://hub.docker.com/repository/docker/`<SEU_USER>`{=html}/5FSDT-Fase-4Tech-Challenge
+    https://hub.docker.com/repository/docker/villares/5fsdt-fase-4tech-challenge
 
 -   **Prisma Docs:**\
     https://www.prisma.io/docs
