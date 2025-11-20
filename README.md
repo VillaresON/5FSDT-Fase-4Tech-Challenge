@@ -189,6 +189,76 @@ Realizam:
 
 ------------------------------------------------------------------------
 
+---
+
+## 📌 Rotas da API
+
+### 📝 **Posts**
+
+---
+
+### **GET /posts**
+Retorna a lista de posts.
+
+#### Query params
+| Parâmetro | Tipo | Descrição |
+|----------|------|------------|
+| `search` | string | Filtra posts pelo título ou conteúdo (busca parcial). Opcional. |
+
+**Exemplos:**
+- `/posts`
+- `/posts?search=segundo`
+
+---
+
+### **GET /posts/:id**
+Retorna um único post pelo seu ID.
+
+**Exemplo:**  
+`/posts/1`
+
+---
+
+### **POST /posts**
+Cria um novo post.  
+**Restrito a:** `professor`
+
+#### Body (JSON)
+```json
+{
+  "title": "Meu Post",
+  "content": "Conteúdo do post"
+}
+```
+
+---
+
+### **PUT /posts/:id**
+Atualiza um post existente.  
+**Restrito a:** `professor`
+
+#### Body (JSON)
+```json
+{
+  "title": "Título atualizado",
+  "content": "Conteúdo atualizado"
+}
+```
+
+---
+
+### **DELETE /posts/:id**
+Remove um post pelo ID.  
+**Restrito a:** `professor`
+
+---
+
+### **GET /posts/admin/all**
+Lista todos os posts com dados administrativos.  
+**Restrito a:** `professor` ou `admin`
+
+------------------------------------------------------------------------
+
 ## 🧪 **4. Testes**
 
 Para executar testes (caso existam):
