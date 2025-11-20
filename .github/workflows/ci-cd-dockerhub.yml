@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE_NAME: 5FSDT-Fase-4Tech-Challenge
+  IMAGE_NAME: 5fsdt-fase-4tech-challenge
 
 jobs:
   build-and-push:
@@ -43,11 +43,11 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/5FSDT-Fase-4Tech-Challenge:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/5FSDT-Fase-4Tech-Challenge:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/5FSDT-Fase-4Tech-Challenge:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/5fsdt-fase-4tech-challenge:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/5fsdt-fase-4tech-challenge:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/5fsdt-fase-4tech-challenge:latest
           cache-to: type=inline
 
       - name: Image info
         run: |
-          echo "Image pushed: ${{ secrets.DOCKERHUB_USERNAME }}/5FSDT-Fase-4Tech-Challenge:latest"
+          echo "Image pushed: ${{ secrets.DOCKERHUB_USERNAME }}/5fsdt-fase-4tech-challenge:latest"
