@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/authController");
+const { authController } = require("../controllers/authController"); // ✅ desestruturação consistente
 
-router.post("/login", controller.login);
+// Login
+router.post("/login", authController.login);
 
 module.exports = router;
