@@ -173,7 +173,7 @@ docker pull villares/4fase-tech-challenge-back-end:latest
 
 ### Executar container
 ```bash
-docker run --name TechChallenge -p 3000:3000 --env-file .env villares/4fase-tech-challenge-back-end:latest
+docker run --name 4FaseTechChallengeBackEnd -p 3000:3000 villares/4fase-tech-challenge-back-end:latest
 ```
 
 
