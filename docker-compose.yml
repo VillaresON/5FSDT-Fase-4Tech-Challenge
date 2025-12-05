@@ -1,15 +1,12 @@
-version: "3.8"
+version: '3.8'
 services:
   backend:
     build: .
-    image: local/projeto-backend:dev
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
-      PORT: 3000
-      DATABASE_URL: "file:./prisma/dev.db"
-      JWT_SECRET: "dev_jwt_secret"
+      - NODE_ENV=development
+      - PORT=3000
     volumes:
-      - ./prisma:/app/prisma      # só monta a pasta prisma
-    command: ["sh", "-c", "npm install && npx prisma migrate deploy || true && node src/server.js"]
+      - ./:/app
+      - ./database.sqlite:/app/database.sqlite

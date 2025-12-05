@@ -1,298 +1,41 @@
-# 📚 **\[BackEnd\] Plataforma de Aulas --- Professores & Alunos**
+# Backend - Node.js + Express + Sequelize + SQLite
 
-API desenvolvida em **Node.js + Express + Prisma**, responsável por
-fornecer serviços de autenticação, gerenciamento de posts, professores e
-alunos, além de suportar toda a camada de dados da aplicação FrontEnd.
+## Overview
+Backend API for posts, teachers and students with authentication (JWT). Uses Sequelize + SQLite for simplicity (great for school projects).
 
-------------------------------------------------------------------------
+## Quick start
 
-## 🧰 **1. Setup Inicial**
+1. Copy `.env.example` to `.env` and set `JWT_SECRET`.
+2. Install deps:
+   ```bash
+   npm install
+   ```
+3. Create admin seed:
+   ```bash
+   npm run seed
+   ```
+   Admin: `admin@admin.com` / `admin123`
+4. Run:
+   ```bash
+   npm run dev
+   ```
 
-### **1.1 Requisitos do Sistema**
-
-  ------------------
-  \### **BackEnd**
-  ------------------
-
--   **Linguagem:** Node.js \>= 18\
--   **Framework:** Express\
--   **ORM:** Prisma\
--   **Banco de Dados:** SQLite\
--   **Requisitos adicionais:** Docker (opcional, mas recomendado)\
--   **CI/CD:** GitHub Actions + DockerHub
-
-------------------------------------------------------------------------
-
-### **1.2 Instalação do Projeto**
-
-  ------------------
-  \### **BackEnd**
-  ------------------
-
-### **1. Clonar o repositório**
-
-``` bash
-git clone https://github.com/VillaresON/5FSDT-Fase-4-Tech-Challenge.git
-cd 5FSDT-Fase-4-Tech-Challenge
+## Docker
+Build image:
+```bash
+docker build -t youruser/backend-sequelize .
+docker run -p 3000:3000 --env-file .env youruser/backend-sequelize
 ```
 
-------------------------------------------------------------------------
-
-### **2. Criar o arquivo `.env`**
-
-Crie um `.env` baseado no `.env.example`.\
-Exemplo:
-
-    PORT=3000
-    JWT_SECRET=sua_chave_jwt
-
-------------------------------------------------------------------------
-
-### **3. Instalar dependências**
-
-``` bash
-npm install
-```
-
-------------------------------------------------------------------------
-
-### **4. Gerar o Prisma Client**
-
-``` bash
-npx prisma generate
-```
-
-------------------------------------------------------------------------
-
-### **5. Rodar migrações (se houver)**
-
-``` bash
-npx prisma migrate dev
-```
-
-------------------------------------------------------------------------
-
-### **6. Rodar a aplicação**
-
-``` bash
-npm run start
-```
-
-A API estará disponível em:
-
-    http://localhost:3000
-
-------------------------------------------------------------------------
-
-### **7. (Opcional) Rodar com Docker**
-
-#### **1. Baixar imagem do DockerHub**
-
-``` bash
-docker pull villares/5fsdt-fase-4tech-challenge:latest
-```
-
-#### **2. Executar o container**
-
-``` bash
-docker run -d   --name TechChallengeBackend   -p 3000:3000   villares/5fsdt-fase-4tech-challenge:latest
-```
-
-------------------------------------------------------------------------
-
-## 🏗️ **2. Arquitetura da Aplicação**
-
-### **2.1 Visão Geral**
-
-O backend segue uma arquitetura organizada e escalável:
-
--   **Node.js + Express** para criação da API\
--   **Prisma ORM** para acesso ao banco de dados\
--   **SQLite** para persistência\
--   **JWT** para autenticação\
--   **GitHub Actions + Docker Hub** para automação de deploy
-
-------------------------------------------------------------------------
-
-### **2.2 Diagrama da Arquitetura**
-
-    [Frontend] ---> [Backend API REST] ---> [Prisma ORM] ---> [SQLite Database]
-
-    [GitHub Actions] ---> [Docker Build & Push] ---> [DockerHub Repository]
-
-------------------------------------------------------------------------
-
-### **2.3 Estrutura de Diretórios**
-
-    /src
-      ├── /controllers
-      ├── /middlewares
-      ├── /routes
-      ├── /prisma
-      ├── /utils
-      └── server.js
-    prisma/schema.prisma
-    Dockerfile
-    .github/workflows/docker-ci.yml
-
-------------------------------------------------------------------------
-
-### **2.4 Tecnologias Utilizadas**
-
--   Node.js\
--   Express.js\
--   Prisma ORM\
--   SQLite\
--   JSON Web Token (JWT)\
--   Docker\
--   GitHub Actions\
--   Bcrypt
-
-------------------------------------------------------------------------
-
-## 🔌 **3. Endpoints Principais da API**
-
-### **3.1 Autenticação**
-
-  Método   Rota               Descrição
-  -------- ------------------ ----------------------
-  POST     `/auth/login`      Login de professor
-  POST     `/auth/register`   Criação de professor
-
-------------------------------------------------------------------------
-
-### **3.2 Posts**
-
-  Método   Rota                 Descrição
-  -------- -------------------- -----------------------------------
-  GET      `/posts`             Lista posts com busca + paginação
-  GET      `/posts/:id`         Obtém um post
-  POST     `/posts`             Cria um post (professor)
-  PUT      `/posts/:id`         Atualiza um post
-  DELETE   `/posts/:id`         Remove um post
-  GET      `/posts/admin/all`   Lista administrativa
-
-------------------------------------------------------------------------
-
-### **3.3 Professores / Students**
-
--   `/teachers`
--   `/students`
-
-Realizam:
-
--   Lista
--   Detalhe
--   Criação
--   Atualização
--   Exclusão
-
-------------------------------------------------------------------------
-
-## 📌 Rotas da API
-
-### 📝 **Posts**
-
----
-
-### **GET /posts**
-Retorna a lista de posts.
-
-#### Query params
-| Parâmetro | Tipo | Descrição |
-|----------|------|------------|
-| `search` | string | Filtra posts pelo título ou conteúdo (busca parcial). Opcional. |
-
-**Exemplos:**
-- `/posts`
-- `/posts?search=segundo`
-
----
-
-### **GET /posts/:id**
-Retorna um único post pelo seu ID.
-
-**Exemplo:**  
-`/posts/1`
-
----
-
-### **POST /posts**
-Cria um novo post.  
-**Restrito a:** `professor`
-
-#### Body (JSON)
-```json
-{
-  "title": "Meu Post",
-  "content": "Conteúdo do post"
-}
-```
-
----
-
-### **PUT /posts/:id**
-Atualiza um post existente.  
-**Restrito a:** `professor`
-
-#### Body (JSON)
-```json
-{
-  "title": "Título atualizado",
-  "content": "Conteúdo atualizado"
-}
-```
-
----
-
-### **DELETE /posts/:id**
-Remove um post pelo ID.  
-**Restrito a:** `professor`
-
----
-
-### **GET /posts/admin/all**
-Lista todos os posts com dados administrativos.  
-**Restrito a:** `professor` ou `admin`
-
-------------------------------------------------------------------------
-
-## 🧪 **4. Testes**
-
-Para executar testes (caso existam):
-
-``` bash
-npm test
-```
-
-------------------------------------------------------------------------
-
-## 🌀 **5. CI/CD --- Deploy Automático com DockerHub**
-
-O repositório conta com um workflow automático que:
-
-✔ Realiza build\
-✔ Executa testes\
-✔ Faz login no DockerHub\
-✔ Gera e envia a imagem automaticamente
-
-Arquivo usado:
-
-    .github/workflows/docker-ci.yml
-
-A imagem gerada segue o padrão:
-
-    villares/5FSDT-Fase-4Tech-Challenge:latest
-
-------------------------------------------------------------------------
-
-## 📎 **6. Links Úteis e Referências**
-
--   **Repositório Backend:**\
-    https://github.com/VillaresON/5FSDT-Fase-4-Tech-Challenge
-
--   **Docker Hub:**\
-    https://hub.docker.com/repository/docker/villares/5fsdt-fase-4tech-challenge
-
--   **Prisma Docs:**\
-    https://www.prisma.io/docs
+## Notes
+- For development we use `sequelize.sync({ alter: true })` to auto-create tables. For production switch to migrations.
+- Endpoints:
+  - `POST /auth/login` - login
+  - `POST /auth/register` - register teacher (admin only recommended)
+  - `GET /posts` - list posts (query: page,limit,search)
+  - `GET /posts/:id` - get post
+  - `POST /posts` - create (auth)
+  - `PUT /posts/:id` - update (auth, author/admin)
+  - `DELETE /posts/:id` - delete (auth, author/admin)
+  - Teachers and Students have full CRUD under `/teachers` and `/students` (auth)
+  - Comments under `/posts/:postId/comments`
