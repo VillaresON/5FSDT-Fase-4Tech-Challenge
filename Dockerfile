@@ -2,43 +2,37 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# dependências do sistema necessárias para prisma (no alpine)
+# Dependências do sistema para Prisma
 RUN apk add --no-cache libc6-compat openssl
 
-# copia package.json e package-lock / pnpm-lock etc
+# Copia package.json e instala dependências
 COPY package*.json ./
-
-# instalar dependências (dev também para prisma)
 RUN npm ci
 
-# copia o resto do código
+# Copia o resto do código
 COPY . .
 
-# gerar Prisma client
+# Gera o Prisma client
 RUN npx prisma generate
 
-# roda build step se existir (opcional)
-# RUN npm run build
-
-# ---------- production stage ----------
+# ---------- dev runner stage ----------
 FROM node:20-alpine AS runner
 WORKDIR /app
+
 RUN apk add --no-cache libc6-compat
 
-# copiar apenas node_modules e node app do builder
+# Copia node_modules e app do builder
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package*.json ./ 
+COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/.env ./
 
-# Prisma client (já gerado) lives em node_modules/@prisma
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 ENV PORT=3000
 EXPOSE 3000
 
-# Use a non-root user (opcional, mas recomendado)
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+# PARA DEV: roda como root para evitar problema de permissões no SQLite
+# USER appuser  <- comentado para dev
 
 CMD ["node", "src/server.js"]

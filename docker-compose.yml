@@ -11,6 +11,5 @@ services:
       DATABASE_URL: "file:./prisma/dev.db"
       JWT_SECRET: "dev_jwt_secret"
     volumes:
-      - ./:/app                     
-      - ./prisma:/app/prisma        
+      - ./prisma:/app/prisma      # só monta a pasta prisma
     command: ["sh", "-c", "npm install && npx prisma migrate deploy || true && node src/server.js"]
