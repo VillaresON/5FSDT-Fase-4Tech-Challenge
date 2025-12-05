@@ -3,16 +3,16 @@ const router = express.Router();
 const controller = require("../controllers/postController");
 const auth = require("../middlewares/auth");
 
-// Específicas primeiro:
+// Admin list
 router.get("/admin/all", auth(["professor", "admin"]), controller.adminList);
 
-// Público (lista e busca)
+// Lista pública
 router.get("/", controller.list);
 
-// Detalhe (sempre por último!)
+// Detalhe
 router.get("/:id", controller.get);
 
-// Professores:
+// CRUD Professores (autenticado)
 router.post("/", auth(["professor"]), controller.create);
 router.put("/:id", auth(["professor"]), controller.update);
 router.delete("/:id", auth(["professor"]), controller.remove);
