@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const c = require("../controllers/userController");
-const auth = require("../middlewares/authMiddleware");
-const role = require("../middlewares/roleMiddleware");
+const controller = require("../controllers/userController");
+const auth = require("../middlewares/auth");
 
-router.get("/", auth, role(["PROFESSOR"]), c.listUsers);
-router.post("/", auth, role(["PROFESSOR"]), c.createUser);
-router.put("/:id", auth, role(["PROFESSOR"]), c.updateUser);
-router.delete("/:id", auth, role(["PROFESSOR"]), c.deleteUser);
+// CRUD de usuários apenas para professor
+router.get("/", auth(["professor"]), controller.listUsers);
+router.post("/", auth(["professor"]), controller.createUser);
+router.put("/:id", auth(["professor"]), controller.updateUser);
+router.delete("/:id", auth(["professor"]), controller.deleteUser);
 
 module.exports = router;
