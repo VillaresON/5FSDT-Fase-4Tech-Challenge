@@ -7,12 +7,12 @@ const auth = require("../middlewares/auth");
 router.get("/", controller.list);
 router.get("/:id", controller.get);
 
-// CRUD apenas para professores/admins
+// CRUD de posts — apenas professor pode criar/editar/deletar
 router.post("/", auth(["professor"]), controller.create);
 router.put("/:id", auth(["professor"]), controller.update);
 router.delete("/:id", auth(["professor"]), controller.remove);
 
-// Admin list
+// Lista admin (professor e admin)
 router.get("/admin/all", auth(["professor", "admin"]), controller.adminList);
 
 module.exports = router;

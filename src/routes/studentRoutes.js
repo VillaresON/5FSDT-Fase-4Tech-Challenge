@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require("../controllers/studentController");
 const auth = require("../middlewares/auth");
 
+// Todas rotas protegidas para professor/admin
 router.get("/", auth(["professor", "admin"]), controller.list);
 router.get("/:id", auth(["professor", "admin"]), controller.get);
 router.post("/", auth(["professor", "admin"]), controller.create);
