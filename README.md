@@ -1,4 +1,3 @@
-📘 README.md — Backend Node.js + Express + Sequelize + SQLite
 # 📚 4ª Fase – Tech Challenge  
 ## 🖥️ Backend Oficial — Node.js + Express + Sequelize + SQLite3  
 ### Autor: **Jonathas Villares**
@@ -11,51 +10,47 @@ Este repositório contém o **backend completo** do Tech Challenge da 4ª fase, 
 
 - **Node.js** + **Express**
 - **Sequelize ORM**
-- **SQLite3** (leve, simples e ideal para ambiente acadêmico)
+- **SQLite3**
 - Autenticação com **JWT**
 - Hash de senha com **bcrypt**
-- Padrão REST profissional
 - CI/CD com **GitHub Actions**
-- Deploy via imagem Docker enviada automaticamente para o Docker Hub:
+- Deploy automático para Docker Hub:
 
-
-
+```
 villares/4fase-tech-challenge-back-end:latest
+```
 
-
-O sistema implementa toda a estrutura de **Posts, Professores e Estudantes**, incluindo autenticação, permissões, CRUD completo e comentários.
+O sistema implementa Posts, Professores, Estudantes e Comentários, com permissões e autenticação completas.
 
 ---
 
 ## 🚀 Funcionalidades
 
 ### 👨‍🏫 Professores
-- Cadastro, edição, listagem e exclusão
-- Apenas **admins** podem cadastrar e excluir professores
-- Professores comuns podem editar apenas seus próprios dados
+- CRUD completo  
+- Admins podem criar/remover professores  
+- Professores editam apenas seus próprios dados
 
 ### 👨‍🎓 Estudantes
-- CRUD completo
+- CRUD completo  
 - Professores autenticados podem gerenciar estudantes
 
 ### 📝 Postagens
 - Listagem com paginação e busca (`?search=palavra`)
-- Exibição completa do post
-- Criação de post (professor autenticado)
-- Edição e exclusão (somente autor ou admin)
-- Comentários vinculados aos posts
+- Visualização completa
+- Criação, edição e exclusão (autor/admin)
+- Comentários vinculados
 
-### 🔐 Autenticação e Autorização
-- Login via JWT
-- Rotas protegidas com middleware
-- Controle de permissões (admin, autor, usuário comum)
+### 🔐 Autenticação
+- JWT  
+- Middleware de proteção  
+- Permissões por tipo de usuário
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+## 🏗️ Estrutura do Projeto
 
-
-
+```
 backend/
 ├── server.js
 ├── package.json
@@ -64,142 +59,152 @@ backend/
 ├── .sequelizerc
 ├── .env.example
 ├── src/
-│ ├── config/
-│ ├── controllers/
-│ ├── routes/
-│ ├── models/
-│ ├── middlewares/
-│ └── seeders/
+│   ├── config/
+│   ├── controllers/
+│   ├── routes/
+│   ├── models/
+│   ├── middlewares/
+│   └── seeders/
 ├── migrations/
 ├── seeders/
 └── .github/
-└── workflows/
-├── ci.yml
-└── docker-publish.yml
-
+    └── workflows/
+        ├── ci.yml
+        └── docker-publish.yml
+```
 
 ---
 
 ## ⚙️ Pré-requisitos
 
-- **Node.js 18+**
-- **NPM**
+- Node.js 18+  
+- NPM  
 - Docker (opcional)
-- Git
 
 ---
 
 ## ▶️ Como rodar localmente
 
-### 1️⃣ Instale dependências
-
+### 1️⃣ Instalar dependências
 ```bash
 npm install
+```
 
-2️⃣ Configure o ambiente
-
-Copie o arquivo exemplo:
-
+### 2️⃣ Configurar `.env`
+```bash
 cp .env.example .env
+```
 
-
-E defina um valor forte para:
-
+Defina um valor forte para:
+```
 JWT_SECRET=seu_token_secreto
+```
 
-3️⃣ Crie o banco e o admin automaticamente
+### 3️⃣ Criar admin automaticamente
+```bash
 npm run seed
+```
 
-
-O seed cria:
-
-Login admin:
+Admin criado:
+```
 Email: admin@admin.com
 Senha: admin123
+```
 
-4️⃣ Rode o backend
+### 4️⃣ Rodar API
+```bash
 npm run dev
+```
 
-
-API rodando em:
-
+API em:
+```
 http://localhost:3000
+```
 
-📡 Endpoints
-🔐 Autenticação
-Método	Rota	Descrição
-POST	/auth/login	Login
-POST	/auth/register	Criar professor (ideal para admins)
-📝 Posts
-Método	Rota	Descrição
-GET	/posts	Listar posts
-GET	/posts/:id	Detalhes do post
-POST	/posts	Criar post (login obrigatório)
-PUT	/posts/:id	Editar post
-DELETE	/posts/:id	Excluir post
-💬 Comentários
-Método	Rota	Descrição
-GET	/posts/:postId/comments	Listar comentários
-POST	/posts/:postId/comments	Criar comentário
-👨‍🏫 Professores
-Método	Rota
-GET	/teachers
-GET	/teachers/:id
-POST	/teachers
-PUT	/teachers/:id
-DELETE	/teachers/:id
-👨‍🎓 Estudantes
-Método	Rota
-GET	/students
-GET	/students/:id
-POST	/students
-PUT	/students/:id
-DELETE	/students/:id
-🧪 Testando no VSCode / Insomnia / Postman
-Login primeiro:
+---
 
-POST /auth/login
+## 📡 Endpoints Principais
 
-{
-  "email": "admin@admin.com",
-  "password": "admin123"
-}
+### Autenticação
+| Método | Rota | Ação |
+|--------|------|-------|
+| POST | `/auth/login` | Login |
+| POST | `/auth/register` | Criar professor |
 
+### Posts
+| Método | Rota |
+|--------|-------|
+| GET | `/posts` |
+| GET | `/posts/:id` |
+| POST | `/posts` |
+| PUT | `/posts/:id` |
+| DELETE | `/posts/:id` |
 
-Use o token retornado em:
+### Comentários
+| Método | Rota |
+|--------|-------|
+| GET | `/posts/:postId/comments` |
+| POST | `/posts/:postId/comments` |
 
-Authorization: Bearer <token>
+### Professores
+| CRUD completo | `/teachers` |
 
-🐳 Rodando com Docker
-Build local
+### Estudantes
+| CRUD completo | `/students` |
+
+---
+
+## 🐳 Docker
+
+### Build local
+```bash
 docker build -t villares/4fase-tech-challenge-back-end .
+```
 
-Rodar o container
+### Executar container
+```bash
 docker run -p 3000:3000 --env-file .env villares/4fase-tech-challenge-back-end
+```
 
-Docker-compose
+### Docker Compose
+```bash
 docker-compose up --build
+```
 
-🔄 CI/CD — GitHub Actions
+---
 
-Este backend possui integração contínua:
+## 🔄 CI/CD — GitHub Actions
 
-ci.yml
+### `ci.yml`
+- Instala dependências  
+- Testa build  
+- Executa testes (placeholder)
 
-Instala dependências
+### `docker-publish.yml`
+Ao fazer push para `main`, ele:
 
-Valida build
-
-Executa testes (placeholder)
-
-Valida projeto
-
-docker-publish.yml
-
-Ao fazer push na branch main, o GitHub:
-
-Constrói a imagem Docker
-
-Faz push automático para o Docker Hub:
-
+1. Constrói a imagem  
+2. Envia para Docker Hub:  
+```
 villares/4fase-tech-challenge-back-end:latest
+```
+
+---
+
+## 🏁 Conclusão
+
+Este backend segue padrões profissionais:
+
+- Arquitetura limpa  
+- Autenticação robusta  
+- Permissões avançadas  
+- CI/CD completo  
+- Deploy automatizado via Docker Hub  
+
+Se quiser uma versão com:
+- Swagger
+- Postman Collection
+- Diagrama ERD
+- PDF formatado
+
+Basta pedir!
