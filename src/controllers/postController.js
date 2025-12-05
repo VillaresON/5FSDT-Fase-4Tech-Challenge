@@ -1,7 +1,7 @@
 const prisma = require("../prisma");
 
 module.exports = {
-  // LIST
+  // LIST com busca e paginação
   list: async (req, res) => {
     try {
       const search = String(req.query.search ?? req.query.q ?? "").trim();
@@ -34,6 +34,7 @@ module.exports = {
     }
   },
 
+  // GET por ID
   get: async (req, res) => {
     try {
       const id = Number(req.params.id);
@@ -46,34 +47,63 @@ module.exports = {
     }
   },
 
+  // CREATE
   create: async (req, res) => {
     try {
-      if (!req.user) return res.status(401).json({ error: "Usuário não autenticado" });
+      console.log("REQ.BODY:", req.body);
+      console.log("REQ.USER:", req.user);
+
+      if (!req.user?.id) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
 
       const { title, content } = req.body;
-      if (!title || !content) return res.status(400).json({ error: "Campos title e content são obrigatórios" });
+      if (!title || !content) {
+        return res.status(400).json({ error: "Campos 'title' e 'content' são obrigatórios" });
+      }
 
       const post = await prisma.post.create({
-        data: { title, content, authorId: req.user.id },
+        data: {
+          title: String(title).trim(),
+          content: String(content).trim(),
+          authorId: req.user.id
+        },
         include: { author: true }
       });
 
-      res.status(201).json(post);
+      res.status(201).json({ message: "Post criado com sucesso", post });
     } catch (err) {
       console.error("Erro ao criar post:", err);
-      res.status(500).json({ error: "Erro ao criar post", detail: err.message });
+
+      // Possível erro de permissão no DB
+      if (err.message.includes("readonly")) {
+        return res.status(500).json({
+          error: "Erro ao criar post",
+          detail: "Banco de dados está em modo somente leitura. Verifique permissões do arquivo SQLite."
+        });
+      }
+
+      res.status(500).json({
+        error: "Erro ao criar post",
+        detail: err.message,
+        stack: err.stack
+      });
     }
   },
 
+  // UPDATE
   update: async (req, res) => {
     try {
       const id = Number(req.params.id);
       const { title, content } = req.body;
-      if (!title || !content) return res.status(400).json({ error: "Campos title e content são obrigatórios" });
+
+      if (!title || !content) {
+        return res.status(400).json({ error: "Campos 'title' e 'content' são obrigatórios" });
+      }
 
       const post = await prisma.post.update({
         where: { id },
-        data: { title, content },
+        data: { title: String(title).trim(), content: String(content).trim() },
         include: { author: true }
       });
 
@@ -84,6 +114,7 @@ module.exports = {
     }
   },
 
+  // DELETE
   remove: async (req, res) => {
     try {
       const id = Number(req.params.id);
@@ -95,9 +126,13 @@ module.exports = {
     }
   },
 
+  // LIST ADMIN
   adminList: async (req, res) => {
     try {
-      const posts = await prisma.post.findMany({ include: { author: true }, orderBy: { id: "desc" } });
+      const posts = await prisma.post.findMany({
+        include: { author: true },
+        orderBy: { id: "desc" }
+      });
       res.json(posts);
     } catch (err) {
       console.error("Erro adminList:", err);
