@@ -1,6 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define("Comment", {
-    content: DataTypes.TEXT,
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
   });
 
   Comment.associate = (models) => {
@@ -10,11 +13,15 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Comment.belongsTo(models.Teacher, {
-      foreignKey: "authorId",
+      foreignKey: "teacherId",
+      as: "Teacher",
     });
 
+    Comment.belongsTo(models.Student, {
+      foreignKey: "studentId",
+      as: "Student",
+    });
   };
-
 
   return Comment;
 };

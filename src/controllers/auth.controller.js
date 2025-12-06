@@ -1,39 +1,113 @@
-const { Teacher } = require('../models');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const { Teacher, Student } = require("../models");
 
 module.exports = {
+  // LOGIN (teacher / student)
   async login(req, res) {
     try {
-      const { email, password } = req.body;
-      if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+      const { email, password, type } = req.body;
 
-      const teacher = await Teacher.findOne({ where: { email } });
-      if (!teacher) return res.status(404).json({ error: 'Email not found' });
+      if (!email || !type) {
+        return res
+          .status(400)
+          .json({ error: "Email e tipo de usuário são obrigatórios." });
+      }
 
-      const valid = bcrypt.compareSync(password, teacher.password);
-      if (!valid) return res.status(401).json({ error: 'Invalid password' });
+      let user = null;
 
-      const token = jwt.sign({ id: teacher.id, email: teacher.email, isAdmin: teacher.isAdmin }, process.env.JWT_SECRET || 'troque_essa_senha', { expiresIn: '8h' });
+      if (type === "teacher") {
+        user = await Teacher.findOne({ where: { email } });
+      } else if (type === "student") {
+        user = await Student.findOne({ where: { email } });
+      } else {
+        return res.status(400).json({ error: "Tipo de usuário inválido." });
+      }
 
-      return res.json({ token, user: { id: teacher.id, name: teacher.name, email: teacher.email, isAdmin: teacher.isAdmin } });
+      if (!user) {
+        return res.status(404).json({ error: "Usuário não encontrado." });
+      }
+
+      // professor/admin tem senha
+      if (type === "teacher") {
+        if (!password) {
+          return res.status(400).json({ error: "Senha obrigatória." });
+        }
+
+        if (!user.password) {
+          return res
+            .status(400)
+            .json({ error: "Usuário não possui senha cadastrada." });
+        }
+
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) {
+          return res.status(401).json({ error: "Senha inválida." });
+        }
+      }
+
+      const payload = {
+        id: user.id,
+        type, // "teacher" | "student"
+        isAdmin: !!user.isAdmin,
+      };
+
+      const token = jwt.sign(
+        payload,
+        process.env.JWT_SECRET || "troque_essa_senha",
+        { expiresIn: "7d" }
+      );
+
+      return res.json({
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          type,
+          isAdmin: !!user.isAdmin,
+        },
+      });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Server error' });
+      console.error("Erro no login:", err);
+      return res.status(500).json({ error: "Erro ao fazer login." });
     }
   },
 
+  // REGISTER (Teacher/Admin)
   async register(req, res) {
     try {
       const { name, email, password, isAdmin } = req.body;
-      if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password required' });
 
-      const hashed = bcrypt.hashSync(password, 10);
-      const teacher = await Teacher.create({ name, email, password: hashed, isAdmin: !!isAdmin });
-      return res.status(201).json({ id: teacher.id, name: teacher.name, email: teacher.email });
+      if (!name || !email || !password) {
+        return res
+          .status(400)
+          .json({ error: "Nome, email e senha são obrigatórios." });
+      }
+
+      const exists = await Teacher.findOne({ where: { email } });
+      if (exists) {
+        return res.status(400).json({ error: "E-mail já cadastrado." });
+      }
+
+      const hash = await bcrypt.hash(password, 10);
+
+      const teacher = await Teacher.create({
+        name,
+        email,
+        password: hash,
+        isAdmin: !!isAdmin,
+      });
+
+      return res.status(201).json({
+        id: teacher.id,
+        name: teacher.name,
+        email: teacher.email,
+        isAdmin: teacher.isAdmin,
+      });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Server error' });
+      console.error("Erro no register:", err);
+      return res.status(500).json({ error: "Erro ao registrar usuário." });
     }
-  }
+  },
 };

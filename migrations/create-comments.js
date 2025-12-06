@@ -1,37 +1,63 @@
+'use strict';
+
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("Comments", {
+        await queryInterface.createTable('Comments', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
+                allowNull: false,
             },
-            content: Sequelize.TEXT,
+
+            content: {
+                type: Sequelize.TEXT,
+                allowNull: false,
+            },
 
             postId: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: "Posts",
-                    key: "id",
+                    model: 'Posts',
+                    key: 'id',
                 },
-                onDelete: "CASCADE",
+                onDelete: 'CASCADE',
             },
-            authorId: {
+
+            teacherId: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 references: {
-                    model: "Teachers",
-                    key: "id",
+                    model: 'Teachers',
+                    key: 'id',
                 },
-                onDelete: "CASCADE",
+                onDelete: 'SET NULL',
             },
-            createdAt: Sequelize.DATE,
-            updatedAt: Sequelize.DATE,
+
+            studentId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'Students',
+                    key: 'id',
+                },
+                onDelete: 'SET NULL',
+            },
+
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
         });
     },
 
     async down(queryInterface) {
-        await queryInterface.dropTable("Comments");
+        await queryInterface.dropTable('Comments');
     },
 };

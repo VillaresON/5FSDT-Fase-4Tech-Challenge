@@ -13,9 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Teacher.hasMany(models.Comment, {
-      foreignKey: "authorId",
+      foreignKey: "teacherId",
+      as: "Comments",
+      onDelete: "CASCADE",
     });
-
   };
 
   return Teacher;

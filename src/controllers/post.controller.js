@@ -1,4 +1,6 @@
-const { Post, Teacher, Comment, Sequelize } = require('../models');
+const { Post, Teacher, Comment, Student, Sequelize } = require("../models");
+
+
 const Op = Sequelize.Op;
 
 module.exports = {
@@ -29,16 +31,16 @@ module.exports = {
     }
   },
 
-  async get(req, res) {
+   async get(req, res) {
     try {
       const post = await Post.findByPk(req.params.id, {
         include: [
           {
             model: Comment,
-            include: {
-              model: Teacher,
-              attributes: ["id", "name"],
-            },
+            include: [
+              { model: Teacher, as: "Teacher", attributes: ["id", "name"] },
+              { model: Student, as: "Student", attributes: ["id", "name"] },
+            ],
             attributes: ["id", "content", "createdAt"],
           },
           {
@@ -48,14 +50,16 @@ module.exports = {
         ],
       });
 
-      if (!post) return res.status(404).json({ error: 'Post not found' });
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
       return res.json(post);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Server error' });
+      console.error("Erro ao buscar post:", err);
+      return res.status(500).json({ error: "Server error" });
     }
   },
-
   async create(req, res) {
     try {
       const { title, content, excerpt } = req.body;

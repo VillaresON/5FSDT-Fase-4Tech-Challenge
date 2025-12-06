@@ -1,31 +1,53 @@
+"use strict";
+
 module.exports = {
-    async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("Posts", {
-            id: {
-                type: Sequelize.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            title: Sequelize.STRING,
-            content: Sequelize.TEXT,
-            excerpt: Sequelize.TEXT,
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("Posts", {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
 
-            authorId: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                references: {
-                    model: "Teachers",
-                    key: "id",
-                },
-                onDelete: "CASCADE",
-            },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
 
-            createdAt: Sequelize.DATE,
-            updatedAt: Sequelize.DATE,
-        });
-    },
+      content: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
 
-    async down(queryInterface) {
-        await queryInterface.dropTable("Posts");
-    },
+      excerpt: {
+        type: Sequelize.STRING,
+      },
+
+      authorId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Teachers",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+    });
+  },
+
+  async down(queryInterface) {
+    await queryInterface.dropTable("Posts");
+  },
 };
