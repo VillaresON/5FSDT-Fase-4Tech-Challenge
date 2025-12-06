@@ -6,7 +6,7 @@ module.exports = {
     try {
       const { page = 1, limit = 10 } = req.query;
       const offset = (page - 1) * limit;
-      const teachers = await Teacher.findAndCountAll({ limit: Number(limit), offset: Number(offset), attributes: ['id','name','email','isAdmin'] });
+      const teachers = await Teacher.findAndCountAll({ limit: Number(limit), offset: Number(offset), attributes: ['id', 'name', 'email', 'isAdmin'] });
       return res.json({ data: teachers.rows, total: teachers.count, page: Number(page), limit: Number(limit) });
     } catch (err) {
       console.error(err);
@@ -16,7 +16,7 @@ module.exports = {
 
   async get(req, res) {
     try {
-      const t = await Teacher.findByPk(req.params.id, { attributes: ['id','name','email','isAdmin'] });
+      const t = await Teacher.findByPk(req.params.id, { attributes: ['id', 'name', 'email', 'isAdmin'] });
       if (!t) return res.status(404).json({ error: 'Not found' });
       return res.json(t);
     } catch (err) {
@@ -62,17 +62,17 @@ module.exports = {
 
   async remove(req, res) {
     try {
-      const t = await Teacher.findByPk(req.params.id);
-      if (!t) return res.status(404).json({ error: 'Not found' });
+      const teacher = await Teacher.findByPk(req.params.id);
 
-      // only admin can delete
-      if (!req.user.isAdmin) return res.status(403).json({ error: 'Only admin can delete' });
+      if (!teacher) {
+        return res.status(404).json({ error: "Teacher not found" });
+      }
 
-      await t.destroy();
-      return res.json({ message: 'Deleted' });
+      await teacher.destroy();
+      return res.json({ message: "Teacher deleted successfully" });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Server error' });
+      console.error("Erro ao excluir professor:", err);
+      return res.status(500).json({ error: "Server error" });
     }
   }
 };
