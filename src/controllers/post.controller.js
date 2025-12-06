@@ -31,7 +31,23 @@ module.exports = {
 
   async get(req, res) {
     try {
-      const post = await Post.findByPk(req.params.id, { include: [{ model: Teacher, attributes: ['id', 'name'] }, { model: Comment }] });
+      const post = await Post.findByPk(req.params.id, {
+        include: [
+          {
+            model: Comment,
+            include: {
+              model: Teacher,
+              attributes: ["id", "name"],
+            },
+            attributes: ["id", "content", "createdAt"],
+          },
+          {
+            model: Teacher,
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+
       if (!post) return res.status(404).json({ error: 'Post not found' });
       return res.json(post);
     } catch (err) {
@@ -77,6 +93,10 @@ module.exports = {
       if (!post) {
         return res.status(404).json({ error: "Post not found" });
       }
+
+      await Comment.destroy({
+        where: { postId: post.id }
+      });
 
       await post.destroy();
       return res.json({ message: "Post deleted successfully" });

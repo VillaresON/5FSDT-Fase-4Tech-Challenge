@@ -30,7 +30,7 @@ async function start() {
     await sequelize.authenticate();
     console.log('Database connected');
     // sync models - safe for dev; in production prefer migrations
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: true });
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
     console.error('Failed to start:', err);

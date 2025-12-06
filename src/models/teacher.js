@@ -1,12 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
-  const Teacher = sequelize.define('Teacher', {
+  const Teacher = sequelize.define("Teacher", {
     name: DataTypes.STRING,
-    email: { type: DataTypes.STRING, unique: true },
+    email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: { type: DataTypes.BOOLEAN, defaultValue: false }
-  }, {});
-  Teacher.associate = models => {
-    Teacher.hasMany(models.Post, { foreignKey: 'authorId' });
+    isAdmin: DataTypes.BOOLEAN,
+  });
+
+  Teacher.associate = (models) => {
+    Teacher.hasMany(models.Post, {
+      foreignKey: "authorId",
+      onDelete: "CASCADE",
+    });
+
+    Teacher.hasMany(models.Comment, {
+      foreignKey: "authorId",
+    });
+
   };
+
   return Teacher;
 };

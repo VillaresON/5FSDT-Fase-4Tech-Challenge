@@ -1,11 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
-  const Comment = sequelize.define('Comment', {
-    author: DataTypes.STRING,
+  const Comment = sequelize.define("Comment", {
     content: DataTypes.TEXT,
-    postId: DataTypes.INTEGER
-  }, {});
-  Comment.associate = models => {
-    Comment.belongsTo(models.Post, { foreignKey: 'postId' });
+  });
+
+  Comment.associate = (models) => {
+    Comment.belongsTo(models.Post, {
+      foreignKey: "postId",
+      onDelete: "CASCADE",
+    });
+
+    Comment.belongsTo(models.Teacher, {
+      foreignKey: "authorId",
+    });
+
   };
+
+
   return Comment;
 };

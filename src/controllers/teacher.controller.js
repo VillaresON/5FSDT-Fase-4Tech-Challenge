@@ -1,5 +1,5 @@
-const { Teacher } = require('../models');
 const bcrypt = require('bcryptjs');
+const { Teacher, Post, Comment } = require('../models');
 
 module.exports = {
   async list(req, res) {
@@ -60,6 +60,7 @@ module.exports = {
     }
   },
 
+
   async remove(req, res) {
     try {
       const teacher = await Teacher.findByPk(req.params.id);
@@ -68,7 +69,24 @@ module.exports = {
         return res.status(404).json({ error: "Teacher not found" });
       }
 
+      // ✅ Buscar posts do professor
+      const posts = await Post.findAll({
+        where: { authorId: teacher.id }
+      });
+
+      // ✅ Apagar comments de cada post
+      for (const post of posts) {
+        await Comment.destroy({ where: { postId: post.id } });
+      }
+
+      // ✅ Apagar posts
+      await Post.destroy({
+        where: { authorId: teacher.id }
+      });
+
+      // ✅ Apagar professor
       await teacher.destroy();
+
       return res.json({ message: "Teacher deleted successfully" });
     } catch (err) {
       console.error("Erro ao excluir professor:", err);
