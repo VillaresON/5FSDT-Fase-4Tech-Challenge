@@ -2,9 +2,10 @@ const router = require('express').Router();
 const ctrl = require('../controllers/student.controller');
 const auth = require('../middlewares/auth.middleware');
 
+router.post("/login", ctrl.login);
 router.get('/', auth, ctrl.list);
 router.get('/:id', auth, ctrl.get);
-router.post('/', auth, ctrl.create);
+router.post('/', ctrl.create);
 router.put('/:id', auth, ctrl.update);
 router.delete('/:id', auth, ctrl.remove);
 
