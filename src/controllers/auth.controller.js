@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const { Teacher, Student } = require("../models");
 
 module.exports = {
-  // LOGIN (teacher / student)
+
   async login(req, res) {
     try {
       const { email, password, type } = req.body;
@@ -48,7 +48,7 @@ module.exports = {
 
       const payload = {
         id: user.id,
-        type, // "teacher" | "student"
+        type, 
         isAdmin: !!user.isAdmin,
       };
 

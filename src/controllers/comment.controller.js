@@ -52,19 +52,19 @@ module.exports = {
         postId,
       };
 
-      // ✅ PROFESSOR / ADMIN
+
       if (req.user.type === "teacher") {
         data.teacherId = req.user.id;
       }
 
-      // ✅ ALUNO
+
       if (req.user.type === "student") {
         data.studentId = req.user.id;
       }
 
       const comment = await Comment.create(data);
 
-      // ✅ RETORNA COM JOIN PRA FRONT EXIBIR NOME
+  
       const fullComment = await Comment.findByPk(comment.id, {
         include: [
           { model: Teacher, as: "Teacher", attributes: ["id", "name"] },
